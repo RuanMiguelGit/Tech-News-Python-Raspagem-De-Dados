@@ -38,5 +38,5 @@ jobs:
         uses: betrybe/store-evaluation-action@v2
         with:
           evaluation-data: ${{ steps.pytest_evaluator.outputs.result }}
-          environment: staging
+          environment: production
           pr-number: ${{ github.event.number }}

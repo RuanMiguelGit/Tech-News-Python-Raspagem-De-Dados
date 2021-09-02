@@ -71,6 +71,11 @@ def scrape_novidades(html_content):
 # Requisito 4
 def scrape_next_page_link(html_content):
     """Seu código deve vir aqui"""
+    response = Selector(html_content)
+    reponse_next_page = response.css(
+        "div.z--col.z--w-2-3 > div.tec--list.tec--list--lg > a ::attr(href)"
+    ).get()
+    return reponse_next_page
 
 
 # Requisito 5

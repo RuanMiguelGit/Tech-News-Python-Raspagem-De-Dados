@@ -6,10 +6,7 @@ from tech_news.scraper import (
     get_tech_news,
 )
 from tech_news.database import db
-from tests.assets.test_assets import (
-    all_news,
-    urls_from_novidades,
-)
+from tests.assets.test_assets import all_news, urls_from_novidades
 import time
 import pytest
 import pickle

@@ -25,12 +25,15 @@ def fetch(url):
 def scrape_noticia(html_content):
     """Seu código deve vir aqui"""
     response = Selector(html_content)
-    url = response.css("head link[rel=canonical]::attr(href)").get()
+    url = response.css("head link[rel=canonical]::attr(href)").get() or None
     source = response.css("div.z--mb-16 > div > a::text").getall()
-    title = response.css("#js-article-title ::text").get()
-    timestamp = response.css("#js-article-date::attr(datetime)").get()
-    writer = response.css(
-        "p.z--m-none.z--truncate.z--font-bold > a::text"
+    title = response.css("#js-article-title ::text").get() or None
+    timestamp = response.css("#js-article-date::attr(datetime)").get() or None
+    possible_writer_lay_1 = response.css(
+        ".tec--author__info__link::text"
+    ).get()
+    possible_writer_lay_2 = response.css(
+        "div.tec--timestamp__item.z--font-bold > a ::text"
     ).get()
     shares_count = response.css(".tec--toolbar__item::text").get()
     comments_count = response.css("#js-comments-btn::attr(data-count)").get()
@@ -45,7 +48,7 @@ def scrape_noticia(html_content):
         "url": url,
         "title": title,
         "timestamp": timestamp,
-        "writer": writers(writer),
+        "writer": writers([possible_writer_lay_1, possible_writer_lay_2]),
         "shares_count": shares(shares_count),
         "comments_count": comments(comments_count),
         "summary": summary,
@@ -75,17 +78,25 @@ def scrape_next_page_link(html_content):
     return reponse_next_page
 
 
+def call_next_page(amount, list_of_links, response):
+    if amount > len(list_of_links):
+        page_url_next = scrape_next_page_link(response)
+        response = fetch(page_url_next)
+
+
 # Requisito 5
 def get_tech_news(amount):
     """Seu código deve vir aqui"""
     list_of_news = []
     page_url = "https://www.tecmundo.com.br/novidades"
-    while amount >= len(list_of_news):
-        response = fetch(page_url)
+    response = fetch(page_url)
+    page_url_next = scrape_next_page_link(response)
+
+    while len(list_of_news) < amount:
         respose_list_of_urls = scrape_novidades(response)
         for news in respose_list_of_urls:
-            list_of_news.append(scrape_noticia(fetch(news)))
-            if len(list_of_news) == amount:
-                create_news(list_of_news)
-                return list_of_news
-        page_url = scrape_next_page_link(response)
+            if len(list_of_news) < amount:
+                list_of_news.append(scrape_noticia(fetch(news)))
+        response = fetch(page_url_next)
+    create_news(list_of_news)
+    return list_of_news

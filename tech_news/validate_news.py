@@ -1,8 +1,12 @@
-def writers(writer):
-    if writer:
-        return writer.strip()
+def writers(possibilities):
+
+    if possibilities[0]:
+        writer = possibilities[0].strip()
+    elif possibilities[1]:
+        writer = possibilities[1].strip()
     else:
-        return None
+        writer = "Equipe TecMundo"
+    return writer
 
 
 def comments(comments_count):

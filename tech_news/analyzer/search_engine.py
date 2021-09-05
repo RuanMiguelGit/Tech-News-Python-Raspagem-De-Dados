@@ -1,6 +1,5 @@
 from tech_news.database import search_news
-
-# import datetime
+import datetime
 
 # Requisito 6
 
@@ -22,6 +21,20 @@ def search_by_title(title):
 # Requisito 7
 def search_by_date(date):
     """Seu código deve vir aqui"""
+    response_tuple = []
+    try:
+        # source of the code use in the line 26
+        # https://stackoverflow.com/questions/16870663/how-do-i-validate-a-
+        # date-string-format-in-python/16870699
+        datetime.datetime.strptime(date, "%Y-%m-%d")
+    except ValueError:
+        raise ValueError("Data inválida")
+    response = search_news({"timestamp": {"$regex": date}})
+    for date in response:
+        tuple_value = [date["title"], date["url"]]
+        respose_data = tuple(tuple_value)
+        response_tuple.append(respose_data)
+    return response_tuple
 
 
 # Requisito 8

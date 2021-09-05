@@ -40,6 +40,19 @@ def search_by_date(date):
 # Requisito 8
 def search_by_source(source):
     """Seu código deve vir aqui"""
+    response = search_news({"sources": {"$regex": source, "$options": "i"}})
+    response_tuple = []
+    if len(response) == 0:
+        return []
+    else:
+        for title in response:
+            tuple_value = [title["title"], title["url"]]
+            respose_data = tuple(tuple_value)
+            response_tuple.append(respose_data)
+        return response_tuple
+
+
+print(search_by_source("ResetEra"))
 
 
 # Requisito 9
